@@ -37,7 +37,7 @@ stamp_pdf <- function(in_file, this_list = NULL, out_file = NULL) {
                             position_x = c(0.5, 0.5),
                             position_y = c(0.5, 0.75),
                             size = c(0.5, 0.5),
-                            angle = c(0, 0),
+                            angle = c(15, 15),
                             stringsAsFactors = FALSE)
   }
   if (is.null(out_file)) {
@@ -101,7 +101,8 @@ stamp_pdf <- function(in_file, this_list = NULL, out_file = NULL) {
         if (this_list$type[this_list$page == this_page][this_stamp_pos] == 'image') {
           stamped_rnw <- paste(stamped_rnw,
                                paste0('\\node [xshift=', this_position_x, '\\paperwidth,',
-                                      'yshift=-', this_position_y, '\\paperheight]',
+                                      'yshift=-', this_position_y, '\\paperheight,',
+                                      'rotate=', this_angle, ']',
                                       'at (current page.north west) ',
                                       '{\\includegraphics[width=', this_size,
                                       '\\paperwidth]{', what, '}} ;\n'))
