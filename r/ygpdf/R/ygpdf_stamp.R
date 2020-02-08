@@ -140,7 +140,7 @@ ygpdf_stamp <- function(in_file, in_list = NULL, out_file = NULL) {
   #
   # knit
   #
-  knit2pdf(input = rnw_file, output = tex_file)
+  knit2pdf(input = rnw_file, output = tex_file, quiet = TRUE)
   #
   # remove temporary files
   #
