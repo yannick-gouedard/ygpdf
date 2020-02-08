@@ -1,4 +1,3 @@
-
 #' A ygpdf Function
 #'
 #' stamps an existing pdf with an image or a text
