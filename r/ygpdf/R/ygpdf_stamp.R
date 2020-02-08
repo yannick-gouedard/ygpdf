@@ -20,12 +20,12 @@
 #'                          angle = c(0, 0),                   # rotation angle
 #'                          alpha = c(0.5, 0.5),               # transparency
 #'                          stringsAsFactors = FALSE)
-#' stamp_pdf(original_pdf, stamp_list, NULL)
+#' ygpdf_stamp(original_pdf, stamp_list, NULL)
 #'
 #' Note that:   if (is.null(out_file)) { out_file <- gsub('.pdf', ' - stamped.pdf', in_file) }
 #'
 
-stamp_pdf <- function(in_file, in_list = NULL, out_file = NULL) {
+ygpdf_stamp <- function(in_file, in_list = NULL, out_file = NULL) {
   # check for NULL entries and put some default
   if (is.null(in_list)) {
     in_list <- data.frame(what = c(system.file("images",
