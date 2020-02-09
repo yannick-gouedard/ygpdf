@@ -6,26 +6,35 @@
 #' @keywords pdf, differences
 #' @export
 #' @importFrom imager magick2cimg grayscale imhessian threshold label draw_circle save.image
-#' @importFrom magick image_read_pdf image_quantize
+#' @importFrom magick image_read image_read_pdf image_quantize
 #' @importFrom dplyr summarise group_by
+#' @importFrom pdftools pdf_render_page
 #' @import magrittr
 #' @examples
 #'
-#' ygpdf_diff(first_pdf, second_pdf, density, combine_results = TRUE, is_landscape_orientation = TRUE)
+#' ygpdf_diff(first_pdf, second_pdf, density, combine_results = TRUE, is_landscape = TRUE)
 #'
 #' [ TODO ]: manage portrait / landscape orientation
 #'
 
 ygpdf_diff <- function(first_pdf, second_pdf,
                        density = 72, combine_results = TRUE,
-                       is_landscape_orientation = TRUE) {
+                       is_landscape = TRUE) {
+  # check for fonts in the PDfs
+  #pdftools::pdf_fonts(first_pdf)
+  #pdftools::pdf_fonts(second_pdf)
+  #pdf.options(useDingbats=FALSE)
+
+
   # turn PDFs into Hi-res images
-  first_image <- image_read_pdf(first_pdf, density = density)
-  second_image <- image_read_pdf(second_pdf, density = density)
+  #first_image <- image_read_pdf(first_pdf, density = density)
+  #second_image <- image_read_pdf(second_pdf, density = density)
+  first_image <- pdf_render_page(first_pdf, dpi = density)
+  second_image <- pdf_render_page(second_pdf, dpi = density)
 
   # convert images to greyscale
-  first_grey <- first_image %>% image_quantize(colorspace = 'gray')
-  second_grey <- second_image %>% image_quantize(colorspace = 'gray')
+  first_grey <- first_image %>% image_read() %>% image_quantize(colorspace = 'gray')
+  second_grey <- second_image %>% image_read() %>% image_quantize(colorspace = 'gray')
 
   #
   # get.centers code taken from
@@ -43,7 +52,7 @@ ygpdf_diff <- function(first_pdf, second_pdf,
   second_cimg <- magick2cimg(second_grey)
   cimg_diff <- 255 - abs(first_cimg - second_cimg) / 2
   graph <- cimg_diff %>%
-    get.centers("99.9%") %$%
+    get.centers() %$%
     draw_circle(cimg_diff, mx, my, radius = 10, color = 'black',
                 opacity = 1, filled = TRUE)
   #
@@ -71,8 +80,10 @@ ygpdf_diff <- function(first_pdf, second_pdf,
 
   first_diff <- gsub('.pdf', ' - differences.pdf', first_pdf)
   second_diff <- gsub('.pdf', ' - differences.pdf', second_pdf)
-  ygpdf_stamp(first_pdf, stamp_list, first_diff)
-  ygpdf_stamp(second_pdf, stamp_list, second_diff)
+  ygpdf_stamp(first_pdf, stamp_list, first_diff,
+              is_landscape = is_landscape)
+  ygpdf_stamp(second_pdf, stamp_list, second_diff,
+              is_landscape = is_landscape)
 
   file.remove(stamp_file)
 
@@ -82,7 +93,7 @@ ygpdf_diff <- function(first_pdf, second_pdf,
                   second_diff,
                   combined_pdf,
                   keep_paper_size = TRUE,
-                  is_landscape_orientation = is_landscape_orientation)
+                  is_landscape = is_landscape)
     file.remove(first_diff)
     file.remove(second_diff)
   }

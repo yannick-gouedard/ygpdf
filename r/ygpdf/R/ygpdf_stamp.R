@@ -19,12 +19,13 @@
 #'                          angle = c(0, 0),                   # rotation angle
 #'                          alpha = c(0.5, 0.5),               # transparency
 #'                          stringsAsFactors = FALSE)
-#' ygpdf_stamp(original_pdf, stamp_list, NULL)
+#' ygpdf_stamp(original_pdf, stamp_list, NULL, is_landscape = TRUE)
 #'
 #' Note that:   if (is.null(out_file)) { out_file <- gsub('.pdf', ' - stamped.pdf', in_file) }
 #'
 
-ygpdf_stamp <- function(in_file, in_list = NULL, out_file = NULL) {
+ygpdf_stamp <- function(in_file, in_list = NULL, out_file = NULL,
+                        is_landscape = TRUE) {
   # check for NULL entries and put some default
   if (is.null(in_list)) {
     in_list <- data.frame(what = c(system.file("images",
@@ -61,6 +62,13 @@ ygpdf_stamp <- function(in_file, in_list = NULL, out_file = NULL) {
   pagesize <- pdf_pagesize(in_file_no_spaces)
   tex_file <- gsub('.pdf', '.tex', out_file_no_spaces)
 
+  paper_height <- round(max(pagesize[1, 5:6]), 0)
+  paper_width <- round(min(pagesize[1, 5:6]), 0)
+  if (is_landscape) {
+    this_max <- paper_height
+    paper_height <- paper_width
+    paper_width <- this_max
+  }
   ##### create the rnw file
   #
   # I put an inline rnw as I do not want to have a second file (the .rnw)
@@ -72,9 +80,10 @@ ygpdf_stamp <- function(in_file, in_list = NULL, out_file = NULL) {
   #
   stamped_rnw <- paste0(
     '\\documentclass{minimal}\n',
-    '\\special{papersize=', pagesize[1, 6], 'px,', pagesize[1, 5], 'px}',
-    '\\setlength{\\paperwidth}{', pagesize[1, 6], 'px}',
-    '\\setlength{\\paperheight}{', pagesize[1, 5], 'px}',
+    '\\special{papersize=', paper_width, 'px,', paper_height, 'px}\n',
+    if_else(!is_landscape, '\\special{landscape}\n', ''),
+    '\\setlength{\\paperwidth}{', paper_width, 'px}\n',
+    '\\setlength{\\paperheight}{', paper_height, 'px}\n',
     '\\usepackage{eso-pic}',
     '\\usepackage{graphicx}',
     '\\usepackage{changepage}',

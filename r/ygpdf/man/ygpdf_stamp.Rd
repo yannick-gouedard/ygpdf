@@ -4,7 +4,7 @@
 \alias{ygpdf_stamp}
 \title{A ygpdf Function}
 \usage{
-ygpdf_stamp(in_file, in_list = NULL, out_file = NULL)
+ygpdf_stamp(in_file, in_list = NULL, out_file = NULL, is_landscape = TRUE)
 }
 \description{
 stamps an existing pdf with an image or a text
@@ -22,7 +22,7 @@ stamp_list <- data.frame(what = c(stamp_file, stamp_file),  # what?
                          angle = c(0, 0),                   # rotation angle
                          alpha = c(0.5, 0.5),               # transparency
                          stringsAsFactors = FALSE)
-ygpdf_stamp(original_pdf, stamp_list, NULL)
+ygpdf_stamp(original_pdf, stamp_list, NULL, is_landscape = TRUE)
 
 Note that:   if (is.null(out_file)) { out_file <- gsub('.pdf', ' - stamped.pdf', in_file) }
 

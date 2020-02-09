@@ -9,7 +9,7 @@ ygpdf_diff(
   second_pdf,
   density = 72,
   combine_results = TRUE,
-  is_landscape_orientation = TRUE
+  is_landscape = TRUE
 )
 }
 \description{
@@ -18,7 +18,7 @@ uses code from https://cran.r-project.org/web/packages/imager/vignettes/gettings
 }
 \examples{
 
-ygpdf_diff(first_pdf, second_pdf, density, combine_results = TRUE, is_landscape_orientation = TRUE)
+ygpdf_diff(first_pdf, second_pdf, density, combine_results = TRUE, is_landscape = TRUE)
 
 [ TODO ]: manage portrait / landscape orientation
 

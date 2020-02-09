@@ -9,7 +9,7 @@ ygpdf_combine(
   second_pdf,
   out_pdf,
   keep_paper_size = TRUE,
-  is_landscape_orientation = FALSE
+  is_landscape = FALSE
 )
 }
 \description{
@@ -18,7 +18,7 @@ page(n) = page_pdf1(n) + page_pdf2(n)
 }
 \examples{
 
-ygpdf_combine(first_pdf, second_pdf, out_pdf, keep_paper_size = TRUE, is_landscape_orientation = FALSE)
+ygpdf_combine(first_pdf, second_pdf, out_pdf, keep_paper_size = TRUE, is_landscape = FALSE)
 
 [ TODO ]: manage portrait / landscape orientation
 

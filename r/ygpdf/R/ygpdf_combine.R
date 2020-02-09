@@ -10,15 +10,15 @@
 #' @import knitr
 #' @examples
 #'
-#' ygpdf_combine(first_pdf, second_pdf, out_pdf, keep_paper_size = TRUE, is_landscape_orientation = FALSE)
-#' 
+#' ygpdf_combine(first_pdf, second_pdf, out_pdf, keep_paper_size = TRUE, is_landscape = FALSE)
+#'
 #' [ TODO ]: manage portrait / landscape orientation
 #'
 
 
-ygpdf_combine <- function(first_pdf, second_pdf, out_pdf, 
-                          keep_paper_size = TRUE, 
-                          is_landscape_orientation = FALSE) {
+ygpdf_combine <- function(first_pdf, second_pdf, out_pdf,
+                          keep_paper_size = TRUE,
+                          is_landscape = FALSE) {
   first_pdf_no_spaces <- gsub(' ', '', first_pdf)
   second_pdf_no_spaces <- gsub(' ', '', second_pdf)
   out_pdf_no_spaces <- gsub(' ', '', out_pdf)
@@ -36,14 +36,19 @@ ygpdf_combine <- function(first_pdf, second_pdf, out_pdf,
   if (out_pdf_no_spaces != out_pdf) {
     remove_out_pdf_no_spaces_afterwards <- TRUE
   }
-  
+
   pagesize <- pdf_pagesize(first_pdf_no_spaces)
-  if (!all(pdf_pagesize(second_pdf_no_spaces) == pagesize)) {
+  pagesize_second <- pdf_pagesize(second_pdf_no_spaces)
+  if (!((round(max(pagesize_second[1, 5:6]), 0) == round(max(pagesize_second[1, 5:6]), 0)) &
+        (round(min(pagesize_second[1, 5:6]), 0) == round(min(pagesize_second[1, 5:6]), 0)))) {
     stop('Two pdfs shall have save page size')
   }
   paper_height <- round(max(pagesize[1, 5:6]), 0)
   paper_width <- round(min(pagesize[1, 5:6]), 0)
-  if (!is_landscape_orientation) {
+  #
+  # if original is not landscape, then the output is
+  #
+  if (!is_landscape) {
     this_max <- paper_height
     paper_height <- paper_width
     paper_width <- this_max
@@ -61,15 +66,15 @@ ygpdf_combine <- function(first_pdf, second_pdf, out_pdf,
   combined_pdf <- paste0(
     '\\documentclass{minimal}\n',
     '\\special{papersize=', paper_width, 'px,', paper_height, 'px}\n',
-    if_else(!is_landscape_orientation, '\\special{landscape}\n', ''),
+    if_else(!is_landscape, '\\special{landscape}\n', ''),
     '\\setlength{\\paperwidth}{', paper_width, 'px}\n',
     '\\setlength{\\paperheight}{', paper_height, 'px}\n',
     '\\usepackage{pdfpages}\n',
     '\\pagestyle{empty}\n\n',
     '\\begin{document}\n',
     '\\includepdfmerge[nup=',
-    if_else(!is_landscape_orientation, '2x1', '1x2'), ',landscape=', 
-    if_else(is_landscape_orientation, 'false', 'false'), ']{\n')
+    if_else(!is_landscape, '2x1', '1x2'), ',landscape=',
+    if_else(!is_landscape, 'false', 'false'), ']{\n')
   #
   # for each page of the input PDF
   #
@@ -77,12 +82,12 @@ ygpdf_combine <- function(first_pdf, second_pdf, out_pdf,
     #
     # combine two PDFs page per page in 2 columns, rotated
     #
-    combined_pdf <- 
+    combined_pdf <-
       paste0(combined_pdf,
              first_pdf_no_spaces, ',', this_page,',\n',
              second_pdf_no_spaces, ',', this_page
              )
-    
+
     if (this_page != nrow(pagesize)) {
       combined_pdf <- paste0(combined_pdf,',\n')
     }
