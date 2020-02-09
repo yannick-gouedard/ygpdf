@@ -36,7 +36,7 @@ ygpdf_diff <- function(first_pdf, second_pdf,
                            angle = '',              # angle
                            alpha = '',              # transparency (opacity)
                            stringsAsFactors = FALSE)
-  out_difference <- ''
+  out_difference <- c()
 
   for (this_page in 1:nb_pages) {
     # turn PDFs into Hi-res images
