@@ -1,11 +1,11 @@
 Package: ygpdf
-Title: What the Package Does (One Line, Title Case)
+Title: Few simple tools to work on PDF files
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "First",
-           family = "Last",
+    person(given = "Yannick",
+           family = "GOUEDARD",
            role = c("aut", "cre"),
-           email = "first.last@example.com",
+           email = "yannick.gouedard@gmail.com",
            comment = c(ORCID = "YOUR-ORCID-ID"))
 Description: What the package does (one paragraph).
 License: What license it uses
