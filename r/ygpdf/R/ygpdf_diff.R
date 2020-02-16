@@ -5,7 +5,7 @@
 #'
 #' @keywords pdf, differences
 #' @export
-#' @importFrom imager magick2cimg grayscale imhessian threshold label draw_circle save.image
+#' @importFrom imager magick2cimg grayscale imhessian threshold label draw_circle save.image imlist imappend as.cimg
 #' @importFrom magick image_read image_read_pdf image_quantize
 #' @importFrom dplyr summarise group_by
 #' @importFrom pdftools pdf_render_page pdf_length
@@ -66,7 +66,7 @@ ygpdf_diff <- function(first_pdf, second_pdf,
     cimg_diff <- 255 - abs(first_cimg - second_cimg) / 2
     graph <- cimg_diff %>%
       get.centers() %$%
-      draw_circle(cimg_diff, mx, my, radius = 10, color = 'black',
+      draw_circle(cimg_diff, mx, my, radius = 2, color = 'black',
                   opacity = 1, filled = TRUE)
     #
     # Add alpha channel
@@ -78,6 +78,7 @@ ygpdf_diff <- function(first_pdf, second_pdf,
                         sum(alpha == 0) / sum(alpha >= 0))
 
     alpha[, , 1:2] <- 1
+    alpha <- imlist(alpha, as.cimg(1 - alpha[, , 3])) %>% imappend("c")
 
     stamp_file <- paste0('mask', this_page, '.png')
     save.image(alpha, stamp_file, quality = 1)
