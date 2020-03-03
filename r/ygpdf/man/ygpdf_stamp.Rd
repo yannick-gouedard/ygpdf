@@ -11,20 +11,54 @@ stamps an existing pdf with an image or a text
 }
 \examples{
 
-stamp_file <- system.file("images", "Rlogo.pdf", package = "ygpdf")
 
-stamp_list <- data.frame(what = c(stamp_file, stamp_file),  # what?
-                         page = c(1, 2),                    # on wich page?
-                         type = c('image', 'image'),        # image or text?
-                         position_x = c(0.1, 0.5),          # ratio of page width
-                         position_y = c(0.2, 0.5),          # ratio of page height
-                         size = c(0.1, 0.5),                # ratio of page width
-                         angle = c(0, 0),                   # rotation angle
-                         alpha = c(0.5, 0.5),               # transparency
+####
+
+Example 1:
+For an A4 portrait PDF file
+ygpdf_stamp(in_file = "<define here the PDF file>", is_landscape = FALSE)
+
+####
+
+Example 2:
+stamp_file <- system.file("images", "Rlogo.pdf", package = "ygpdf")
+stamp_list <- data.frame(what = c(stamp_file, stamp_file),       # what?
+                         page = c(1, 2),                         # on wich page?
+                         type = c('image', 'image'),             # image or text?
+                         position_x = c(0.1, 0.5),               # ratio of page width
+                         position_y = c(0.2, 0.5),               # ratio of page height
+                         size = c(0.1, 0.5),                     # ratio of page width
+                         angle = c(0, 0),                        # rotation angle
+                         alpha = c(0.5, 0.5),                    # transparency
+                         col_right = c('#FF0000', '#0000FF'),    # color right, for text only
+                         col_leftt = c('#0000FF', '#FF0000'),    # color left, for text only
                          stringsAsFactors = FALSE)
 ygpdf_stamp(original_pdf, stamp_list, NULL, is_landscape = TRUE)
 
 Note that:   if (is.null(out_file)) { out_file <- gsub('.pdf', ' - stamped.pdf', in_file) }
+
+####
+
+Example 3:
+pdf_stamped_file <- gsub('.pdf', ' - stamped.pdf', pdf_file)
+nb_pages <- pdftools::pdf_length(pdf_file)
+colours <- viridis::viridis_pal(option = 'B')(nb_pages + 1)
+watermark <- "--- draft ---"
+stamp_list <- data.frame(what = rep(watermark, nb_pages),        # what?
+                         page = 1:nb_pages,                      # on wich page?
+                         type = rep('text', nb_pages),           # image or text?
+                         position_x = rep(0.37, nb_pages),       # ratio of page width
+                         position_y = rep(0.37, nb_pages),       # ratio of page height
+                         size = rep(0.05, nb_pages),             # ratio of page width
+                         angle = rep(52.6, nb_pages),            # rotation angle
+                         alpha = rep(.8, nb_pages),              # transparency
+                         col_right = colours[1:nb_pages],        # color right, for text only
+                         col_leftt = colours[2:(nb_pages + 1)],  # color left, for text only
+                         stringsAsFactors = FALSE)
+ygpdf_stamp(in_file = pdf_file, in_list = stamp_list,
+            out_file = pdf_stamped_file, is_landscape = FALSE)
+
+####
 
 }
 \keyword{adding}
